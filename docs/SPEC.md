@@ -4,7 +4,7 @@ Status: v1 draft. Owner: Tu. Changes to this file need owner approval.
 
 ## 1. Goal
 One click on the toolbar icon toggles "hide images" for the current tab and current hostname.
-Hidden media is painted solid white in place. Layout (size, position, flow) does not change.
+Hidden media is painted solid gray in place. Layout (size, position, flow) does not change.
 
 Non-goals (v1): popup UI, options page, per-element reveal, sync across devices, Firefox/Safari,
 blocking network downloads of images (images still load, they are only covered).
@@ -47,7 +47,7 @@ Content script sets `data-image-hider="on"` on `<html>`. One injected stylesheet
 
 | Target | Selector / detection | Technique |
 |---|---|---|
-| `<img>`, `<picture>`, `<input type=image>`, SVG `<image>` | CSS selector | `filter: brightness(0) invert(1) !important; background-color:#fff !important` (transparent areas also become white) |
+| `<img>`, `<picture>`, `<input type=image>`, SVG `<image>` | CSS selector | `filter: brightness(0) invert(1) !important; background-color:#fff !important` (transparent areas also become gray) |
 | `<video>` incl. `poster` | CSS selector | Same filter. Plus: pause playing videos, mark `data-ih-paused`; on show resume only marked ones (`play()` rejection ignored). While hidden, any `play` event (capture phase on document) on a video pauses it and marks it. |
 | CSS `background-image` with `url()` or `image-set()` containing url, on elements and `::before`/`::after` | JS scan via `getComputedStyle`; mark `data-ih-bg`, `data-ih-bg-before`, `data-ih-bg-after` | `background-image: none !important; background-color:#fff !important` for the marked element/pseudo. Pure gradients are not touched. |
 | `<iframe>` from media hosts | `src` hostname in allowlist in `extension/lib/media-hosts.js` (YouTube incl. nocookie, Vimeo player, Dailymotion, Facebook video plugin, TikTok embed, Twitch player/clips, Spotify embed, Instagram embed) | Same filter on the iframe element. Non-media iframes (maps, payments, forms, chat) untouched. |
@@ -85,7 +85,7 @@ Default: A. Measure with E2E (screenshot at first paint/`DOMContentLoaded`) on a
 - Content script must not throw on any page; wrap entry points and log with a `[image-hider]` prefix only in dev.
 
 ## 9. Acceptance criteria (automated where possible)
-1. Fixture `basic.html` (img, picture/srcset, transparent PNG, video with poster, background-image div, `::before` background, gradient div, YouTube iframe, Google Maps iframe): after ON, every listed media target is white; gradient and Maps iframe unchanged; `getBoundingClientRect()` of every element identical before/after.
+1. Fixture `basic.html` (img, picture/srcset, transparent PNG, video with poster, background-image div, `::before` background, gradient div, YouTube iframe, Google Maps iframe): after ON, every listed media target is gray; gradient and Maps iframe unchanged; `getBoundingClientRect()` of every element identical before/after.
 2. OFF restores: no `data-ih-*` attributes left, no extension styles, screenshot equal to pre-ON screenshot.
 3. Reload keeps hidden; navigating to another hostname in same tab is shown; navigating back is hidden.
 4. Two tabs on the same hostname are independent.
@@ -104,7 +104,7 @@ Default: A. Measure with E2E (screenshot at first paint/`DOMContentLoaded`) on a
 
 ## 11. Known limitations (v1, accepted)
 - Cross-origin iframe players keep playing audio (cannot pause without the player's API).
-- Text placed over a removed background image may become unreadable (e.g. white text on hero image).
+- Text placed over a removed background image may become unreadable (e.g. gray text on hero image).
 - Not covered: `<canvas>`, inline SVG drawings, icon fonts, emoji, CSS `mask`/`border-image`/`list-style-image`, closed shadow roots, images inside non-media iframes, favicons.
 - First click on each new hostname shows a permission prompt (consequence of optional host permissions).
 - Images are still downloaded; this is visual hiding, not bandwidth saving.
