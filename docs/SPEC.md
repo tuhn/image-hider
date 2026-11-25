@@ -94,6 +94,7 @@ Default: A. Measure with E2E (screenshot at first paint/`DOMContentLoaded`) on a
 7. Video playing before ON is paused; resumes after OFF. Video that was paused before ON stays paused after OFF.
 8. Non-scriptable page click does not throw and shows the `-` badge.
 9. Packaging zip contains only `extension/` contents, manifest valid, no source maps or test files.
+10. README.md meets every rule in section 13; every command it lists runs successfully on a clean clone.
 
 ## 10. Manual test checklist (cannot be fully automated)
 - Permission prompt appears on first ON for a new hostname; deny path works and shows the "this page only" title.
@@ -114,3 +115,35 @@ Default: A. Measure with E2E (screenshot at first paint/`DOMContentLoaded`) on a
 - Listing: name, summary (<= 132 chars), description, category, language, 128x128 store icon, at least one 1280x800 screenshot, small promo tile 440x280 (check if the dashboard currently requires it).
 - Privacy practices tab: single purpose statement, justification for each permission (`storage`, `scripting`, `activeTab`, optional host access), certify no user data collected.
 - Privacy policy: `PRIVACY.md` published at a public URL (states: no data collected, no network requests, state kept locally in session storage).
+- README.md complete per section 13, license chosen by owner.
+
+## 13. README.md requirements
+Audience: (a) a user installing the extension, (b) a developer cloning the repo. Not the agent, not the store reviewer.
+
+### 13.1 Owner intro block
+The file starts with an intro written by the owner between these markers. Keep it verbatim, never rewrite:
+```
+<!-- owner-intro:start -->
+...
+<!-- owner-intro:end -->
+```
+
+### 13.2 Sections, exactly this order, no others
+1. **Install**: Chrome Web Store link (placeholder `TODO: store link` until published); load unpacked steps for Windows, macOS, Linux (one shared list, OS differences only where they exist).
+2. **Usage**: click icon; permission prompt on first use per hostname and what happens if denied; badge meaning; what persists (reload, same hostname) and what resets (other hostname, tab close, browser restart).
+3. **What gets hidden**: one table, element type -> hidden yes/no. Link to SPEC section 4 for technique.
+4. **Known limitations**: 3 to 5 bullets of the ones a user will notice first, then link to SPEC section 11.
+5. **Permissions**: each permission, one plain-language sentence why it is needed.
+6. **Development**: prerequisites with versions; every npm script with a one-line purpose (table); project layout one level deep; how to reload after code changes.
+7. **Release**: `npm run package`, version bump rule, link to `docs/STORE_LISTING.md`.
+8. **Privacy**: one paragraph, link to `PRIVACY.md`.
+9. **License**: owner decides. If not decided, write `TODO: license` and ask the owner.
+
+### 13.3 Rules
+- Under 150 lines. Plain Markdown, renders correctly on GitHub.
+- No badges, emoji, marketing words ("blazing", "seamless", "powerful"), no feature hype.
+- No content copied from SPEC or CLAUDE.md beyond one-line summaries; link instead.
+- Commands in fenced code blocks, copy-pasteable, no `$` prompt prefix. Give PowerShell and bash only where they differ.
+- One screenshot max (`docs/img/before-after.png`, the 1280x800 store screenshot), with alt text.
+- Every listed command must be executed by the agent before commit and must succeed on a clean clone (`git clone` the repo into a temp folder outside the project, then `npm ci`). Never run `git clean` in the working repo.
+- Stated facts must match the code: permissions vs `manifest.json`, scripts vs `package.json`, layout vs repo tree.

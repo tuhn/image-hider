@@ -19,6 +19,10 @@ Toolbar-click toggle that covers every image on the current tab with white, keep
   - `icons/`
 - `tests/unit`, `tests/e2e`, `tests/fixtures/*.html`
 - `scripts/` dev-only tooling (packaging, icon generation, fixture server)
+- Docs and their audiences (never duplicate content between them, link instead):
+  - `README.md` humans installing or cloning. Structure fixed by SPEC section 13.
+  - `docs/SPEC.md` behaviour contract. `docs/PLAN.md` implementation plan.
+  - `CLAUDE.md` this file, for the agent only.
 
 ## Hard rules
 - Vanilla JS (ES2022), no bundler, no runtime dependencies. devDependencies only for tests/lint/packaging.
@@ -39,4 +43,6 @@ Toolbar-click toggle that covers every image on the current tab with white, keep
 1. `npm run lint && npm test && npm run test:e2e` all pass. Show the output.
 2. Update SPEC "Known limitations" if behaviour deviates from SPEC.
 3. List which manual checks from SPEC "Manual test checklist" you could not automate.
-4. Small, focused commits with descriptive messages.
+4. If the change touches npm scripts, layout, permissions, install steps or user-visible behaviour,
+   update README.md in the same commit. Never edit the owner intro block in README.md.
+5. Small, focused commits with descriptive messages.

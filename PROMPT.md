@@ -18,13 +18,23 @@
          "Bash(npm run lint)", "Bash(npm test)", "Bash(npm run test:e2e)",
          "Bash(npm run package)", "Bash(npm install -D *)", "Bash(npx playwright install chromium)",
          "Bash(git add *)", "Bash(git commit *)", "Bash(git status)", "Bash(git diff *)",
-         "WebFetch(domain:developer.chrome.com)"
+         "WebFetch(domain:developer.chrome.com)",
+         "Bash(npm ci)", "Bash(git clone *)", "Bash(wc -l README.md)"
        ],
        "deny": ["Bash(git push *)", "Bash(rm -rf *)", "Bash(npm publish *)"]
      }
    }
    ```
-4. Read `docs/SPEC.md` sections 4, 5, 11 and change anything you disagree with before starting. The spec is the contract.
+4. Read `docs/SPEC.md` sections 4, 5, 11, 13 and change anything you disagree with before starting. The spec is the contract.
+5. Create `README.md` with only your own intro (2 to 3 sentences: what it does, for whom, why). Claude fills the rest later and must keep this block verbatim:
+   ```markdown
+   # Image Hider
+
+   <!-- owner-intro:start -->
+   Your 2-3 sentences here.
+   <!-- owner-intro:end -->
+   ```
+   Commit it together with the other kit files.
 
 Workflow per phase: start in plan mode (Shift+Tab until "plan mode on"), review the plan, approve, let it implement, check the evidence it shows, then `/clear` before the next phase so context stays small.
 
@@ -101,11 +111,23 @@ Generate a 1280x800 screenshot from the basic fixture (before/after side by side
 promo tile using Playwright. Verify acceptance criterion 9. Commit.
 ```
 
-### Phase 6: independent review
+### Phase 6: README
+```
+Write README.md per docs/SPEC.md section 13. Keep the owner-intro block verbatim.
+Before writing, read manifest.json, package.json and the repo tree; every fact in the README must
+match them. Reuse the 1280x800 screenshot from Phase 5 as docs/img/before-after.png.
+If the license is not decided, write "TODO: license" and ask me at the end.
+Then verify: git clone the repo into a temp folder outside the project, run npm ci and every command
+the README lists, report the result of each. Check line count is under 150.
+Verify acceptance criterion 10. Commit.
+```
+
+### Phase 7: independent review
 ```
 Use a subagent that has not seen this implementation to review the repo against docs/SPEC.md and
 CLAUDE.md "Hard rules". It should report: SPEC requirements not met, restore leaks (anything left
-on the page after OFF), MV3 service worker state bugs, permission over-reach, CWS policy risks.
+on the page after OFF), MV3 service worker state bugs, permission over-reach, CWS policy risks,
+and README statements that do not match the code or duplicate SPEC content.
 Then fix confirmed issues only, and list the ones you disagree with and why.
 ```
 
@@ -114,6 +136,8 @@ Then fix confirmed issues only, and list the ones you disagree with and why.
 ## 3. After Claude Code finishes (you do this)
 
 - Run SPEC section 10 manual checklist yourself in Chrome stable.
+- Read README.md as a stranger: follow the Install section on another machine or a fresh Chrome profile.
+- After publishing, replace `TODO: store link` in README.md with the real store URL.
 - Replace placeholder icons and promo art.
 - Publish `PRIVACY.md` at a public URL (GitHub Pages or a gist).
 - Chrome Web Store Developer Dashboard: upload zip, fill listing from `docs/STORE_LISTING.md`, privacy practices, submit.
